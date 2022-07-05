@@ -1,6 +1,7 @@
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isArray } from 'lodash-es';
+import { formatToDateTime } from '/@/utils/dateUtil';
 
-export function resultSuccess<T = any>(result?: T) {
+export function resultSuccess<T = any>(result: T) {
   const cloneResult = cloneDeep(result);
 
   return Promise.resolve(cloneResult);
@@ -24,4 +25,13 @@ export function pagination<T = any>(pageNo: number, pageSize: number, array: T[]
       : array.slice(offset, offset + Number(pageSize));
 
   return ret;
+}
+
+export function getTimestamps<T extends string>(stamps?: T | T[]) {
+  const timestamps = {} as Record<T, string>;
+  const types = stamps ? (isArray(stamps) ? stamps : [stamps]) : ['createdAt', 'updatedAt'];
+
+  types.forEach((type) => (timestamps[type] = formatToDateTime(new Date())));
+
+  return timestamps;
 }

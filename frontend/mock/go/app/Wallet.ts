@@ -9,10 +9,10 @@ export default {
   },
   DeleteWallet: () => {
     walletInfo = undefined;
-    return resultSuccess(walletInfo);
+    return resultSuccess(true);
   },
   SaveWallet: (address: string, addressJson: string) => {
     walletInfo = { address, address_json: addressJson };
-    return resultSuccess(walletInfo);
+    return resultSuccess(true);
   },
 } as Partial<typeof Wallet>;

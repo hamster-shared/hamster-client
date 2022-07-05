@@ -39,6 +39,7 @@
     "vue-types": "^4.1.1"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.0.0",
     "@types/nprogress": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^5.30.0",

@@ -4,6 +4,8 @@
 import dayjs from 'dayjs';
 import { format } from 'date-fns';
 
+type ParsableDateType = Parameters<typeof dayjs>[0];
+
 // Format Rule: https://date-fns.org/v2.28.0/docs/format
 const FORMATTERS = {
   normal: 'yyyy-MM-dd',
@@ -12,7 +14,7 @@ const FORMATTERS = {
   monthOnly: 'MM-dd',
 };
 
-const dayjsParseDate = (date: Parameters<typeof dayjs>[0]) => {
+const dayjsParseDate = (date: ParsableDateType) => {
   if (!date) return;
   if (date instanceof Date) return date;
 
@@ -20,7 +22,7 @@ const dayjsParseDate = (date: Parameters<typeof dayjs>[0]) => {
 };
 
 export function formatDate(
-  date: dayjs.Dayjs | undefined = undefined,
+  date: ParsableDateType = undefined,
   formatter: string | ((f: typeof FORMATTERS) => string) = FORMATTERS.normal,
 ): string {
   if (typeof formatter === 'function') formatter = formatter(FORMATTERS);
@@ -29,7 +31,7 @@ export function formatDate(
 }
 
 export function formatToDateTime(
-  date: dayjs.Dayjs | undefined = undefined,
+  date: ParsableDateType = undefined,
   formatter: string | ((f: typeof FORMATTERS) => string) = FORMATTERS.datetime,
 ) {
   return formatDate(date, formatter);
