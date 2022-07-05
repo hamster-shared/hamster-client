@@ -23,7 +23,6 @@ func (a *ServiceImpl) AddApplication(application *AddApplicationParam) (bool, er
 	if err == gorm.ErrRecordNotFound {
 		applyData.Describe = application.Describe
 		applyData.Name = application.Name
-		applyData.Abbreviation = application.Abbreviation
 		a.db.Create(&applyData)
 		return true, nil
 	}
@@ -31,9 +30,9 @@ func (a *ServiceImpl) AddApplication(application *AddApplicationParam) (bool, er
 }
 
 // UpdateApplication update application field
-func (a *ServiceImpl) UpdateApplication(id int, name string, abbreviation string, des string) (bool, error) {
+func (a *ServiceImpl) UpdateApplication(id int, name string, des string) (bool, error) {
 	var applyData Application
-	result := a.db.Model(applyData).Where("id = ?", id).Updates(Application{Name: name, Abbreviation: abbreviation, Describe: des})
+	result := a.db.Model(applyData).Where("id = ?", id).Updates(Application{Name: name, Describe: des})
 	if result.Error != nil {
 		return false, result.Error
 	}
@@ -61,7 +60,6 @@ func (a *ServiceImpl) QueryApplicationById(id int) (ApplyVo, error) {
 	resultData.ID = data.ID
 	resultData.Name = data.Name
 	resultData.Describe = data.Describe
-	resultData.Abbreviation = data.Abbreviation
 	resultData.CreatedAt = data.CreatedAt
 	resultData.UpdatedAt = data.UpdatedAt
 	return resultData, nil

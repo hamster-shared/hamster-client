@@ -31,7 +31,7 @@ func (a *Application) AddApplication(application application.AddApplicationParam
 
 // UpdateApplication edit application
 func (a *Application) UpdateApplication(application application.UpdateApplicationParam) (bool, error) {
-	return a.applicationService.UpdateApplication(int(application.ID), application.Name, application.Abbreviation, application.Describe)
+	return a.applicationService.UpdateApplication(int(application.ID), application.Name, application.Describe)
 }
 
 func (a *Application) DeleteApplication(id int) (bool, error) {

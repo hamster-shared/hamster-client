@@ -3,6 +3,8 @@
 import { application } from '../models';
 import { context } from '../models';
 
+export function DeleteGraphAndParams(arg1: number): Promise<boolean | Error>;
+
 export function QueryApplicationById(arg1: number): Promise<application.ApplyVo | Error>;
 
 export function QueryGraphStatus(arg1: string): Promise<number | Error>;
@@ -23,5 +25,3 @@ export function ApplicationList(
 ): Promise<application.PageApplicationVo | Error>;
 
 export function DeleteApplication(arg1: number): Promise<boolean | Error>;
-
-export function DeleteGraphAndParams(arg1: number): Promise<boolean | Error>;
