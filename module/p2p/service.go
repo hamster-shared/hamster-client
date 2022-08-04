@@ -234,3 +234,17 @@ func (s *ServiceImpl) ReconnectionProLink() (bool, error) {
 	}
 	return false, nil
 }
+
+// JudgePort judge port in use. use:ture;not use false
+func (s *ServiceImpl) JudgePort(port int) bool {
+	links := s.GetProviderLinks()
+	if len(*links) > 0 {
+		for _, value := range *links {
+			if value.Status {
+
+			}
+		}
+		return false
+	}
+	return false
+}

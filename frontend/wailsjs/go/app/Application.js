@@ -14,10 +14,6 @@ export function DeleteApplication(arg1) {
   return window['go']['app']['Application']['DeleteApplication'](arg1);
 }
 
-export function DeleteGraphAndParams(arg1) {
-  return window['go']['app']['Application']['DeleteGraphAndParams'](arg1);
-}
-
 export function QueryApplicationById(arg1) {
   return window['go']['app']['Application']['QueryApplicationById'](arg1);
 }
