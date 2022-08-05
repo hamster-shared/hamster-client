@@ -35,7 +35,7 @@ func (a *Application) UpdateApplication(application application.UpdateApplicatio
 }
 
 func (a *Application) DeleteApplication(id int) (bool, error) {
-	return a.applicationService.DeleteApplication(id)
+	return a.graphDeployParamService.DeleteGraphDeployParameterAndApply(id)
 }
 
 // ApplicationList Paging query application list

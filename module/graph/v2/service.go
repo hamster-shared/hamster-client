@@ -61,3 +61,19 @@ func (g *ServiceImpl) SaveGraphDeployParameterAndApply(addData AddParam) (bool, 
 	g.keyStorageService.Set("graph_"+strconv.Itoa(int(applyData.ID)), string(jsonData))
 	return true, nil
 }
+
+func (g *ServiceImpl) DeleteGraphDeployParameterAndApply(id int) (bool, error) {
+	err := g.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Debug().Where("id = ?", id).Delete(&application.Application{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Debug().Where("applicationId = ?", id).Delete(GraphDeployParameter{}).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

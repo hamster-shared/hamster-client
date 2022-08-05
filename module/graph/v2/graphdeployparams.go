@@ -28,4 +28,5 @@ type AddParam struct {
 
 type Service interface {
 	SaveGraphDeployParameterAndApply(data AddParam) (bool, error)
+	DeleteGraphDeployParameterAndApply(id int) (bool, error)
 }

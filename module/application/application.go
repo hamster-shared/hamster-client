@@ -11,6 +11,7 @@ type Application struct {
 	Plugin         string         `json:"plugin"` //apply plugin
 	Status         int            `json:"status"` //apply status 0: not deploy 1:deployed 2:ALL 3:wait resource 4:In deployment 5:deploy failed
 	P2pForwardPort int            `json:"p2pForwardPort"`
+	GrtIncome      int            `json:"grtIncome"`
 	CreatedAt      time.Time      `json:"createdAt"`
 	UpdatedAt      time.Time      `json:"updatedAt"`
 	DeletedAt      gorm.DeletedAt `json:"deletedAt" gorm:"index"`
