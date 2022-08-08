@@ -18,12 +18,11 @@ type GraphDeployParameter struct {
 }
 
 type AddParam struct {
-	Name         string `json:"name"`   //apply name
-	Plugin       string `json:"plugin"` //apply plugin
-	LeaseTerm    int    `json:"leaseTerm"`
-	Network      string `json:"network"`
-	Mnemonic     string `json:"mnemonic"` // mnemonic
-	PledgeAmount int    `json:"pledgeAmount"`
+	Name          string `json:"name"`   //apply name
+	Plugin        string `json:"plugin"` //apply plugin
+	LeaseTerm     int    `json:"leaseTerm"`
+	Mnemonic      string `json:"mnemonic"` // mnemonic
+	StakingAmount int    `json:"stakingAmount"`
 }
 
 type Service interface {

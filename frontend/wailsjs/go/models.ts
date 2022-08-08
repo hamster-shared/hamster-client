@@ -1,3 +1,244 @@
+export namespace v2 {
+  export class AddParam {
+    name: string;
+    plugin: string;
+    leaseTerm: number;
+    mnemonic: string;
+    stakingAmount: number;
+
+    static createFrom(source: any = {}) {
+      return new AddParam(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.name = source['name'];
+      this.plugin = source['plugin'];
+      this.leaseTerm = source['leaseTerm'];
+      this.mnemonic = source['mnemonic'];
+      this.stakingAmount = source['stakingAmount'];
+    }
+  }
+}
+
+export namespace application {
+  export class UpdateApplicationParam {
+    id: number;
+    name: string;
+    plugin: string;
+
+    static createFrom(source: any = {}) {
+      return new UpdateApplicationParam(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.id = source['id'];
+      this.name = source['name'];
+      this.plugin = source['plugin'];
+    }
+  }
+  export class Application {
+    id: number;
+    name: string;
+    plugin: string;
+    status: number;
+    p2pForwardPort: number;
+    grtIncome: number;
+    // Go type: time.Time
+    createdAt: any;
+    // Go type: time.Time
+    updatedAt: any;
+    // Go type: gorm.DeletedAt
+    deletedAt: any;
+
+    static createFrom(source: any = {}) {
+      return new Application(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.id = source['id'];
+      this.name = source['name'];
+      this.plugin = source['plugin'];
+      this.status = source['status'];
+      this.p2pForwardPort = source['p2pForwardPort'];
+      this.grtIncome = source['grtIncome'];
+      this.createdAt = this.convertValues(source['createdAt'], null);
+      this.updatedAt = this.convertValues(source['updatedAt'], null);
+      this.deletedAt = this.convertValues(source['deletedAt'], null);
+    }
+
+    convertValues(a: any, classs: any, asMap: boolean = false): any {
+      if (!a) {
+        return a;
+      }
+      if (a.slice) {
+        return (a as any[]).map((elem) => this.convertValues(elem, classs));
+      } else if ('object' === typeof a) {
+        if (asMap) {
+          for (const key of Object.keys(a)) {
+            a[key] = new classs(a[key]);
+          }
+          return a;
+        }
+        return new classs(a);
+      }
+      return a;
+    }
+  }
+  export class PageApplicationVo {
+    items: Application[];
+    total: number;
+
+    static createFrom(source: any = {}) {
+      return new PageApplicationVo(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.items = this.convertValues(source['items'], Application);
+      this.total = source['total'];
+    }
+
+    convertValues(a: any, classs: any, asMap: boolean = false): any {
+      if (!a) {
+        return a;
+      }
+      if (a.slice) {
+        return (a as any[]).map((elem) => this.convertValues(elem, classs));
+      } else if ('object' === typeof a) {
+        if (asMap) {
+          for (const key of Object.keys(a)) {
+            a[key] = new classs(a[key]);
+          }
+          return a;
+        }
+        return new classs(a);
+      }
+      return a;
+    }
+  }
+  export class ApplyVo {
+    id: number;
+    // Go type: time.Time
+    createdAt: any;
+    // Go type: time.Time
+    updatedAt: any;
+    name: string;
+    plugin: string;
+    status: number;
+
+    static createFrom(source: any = {}) {
+      return new ApplyVo(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.id = source['id'];
+      this.createdAt = this.convertValues(source['createdAt'], null);
+      this.updatedAt = this.convertValues(source['updatedAt'], null);
+      this.name = source['name'];
+      this.plugin = source['plugin'];
+      this.status = source['status'];
+    }
+
+    convertValues(a: any, classs: any, asMap: boolean = false): any {
+      if (!a) {
+        return a;
+      }
+      if (a.slice) {
+        return (a as any[]).map((elem) => this.convertValues(elem, classs));
+      } else if ('object' === typeof a) {
+        if (asMap) {
+          for (const key of Object.keys(a)) {
+            a[key] = new classs(a[key]);
+          }
+          return a;
+        }
+        return new classs(a);
+      }
+      return a;
+    }
+  }
+}
+
+export namespace graph {
+  export class GraphParameterVo {
+    nodeEthereumUrl: string;
+    ethereumUrl: string;
+    ethereumNetwork: string;
+    indexerAddress: string;
+    mnemonic: string;
+    applicationId: number;
+    name: string;
+    plugin: string;
+    status: number;
+    // Go type: time.Time
+    createdAt: any;
+    // Go type: time.Time
+    updatedAt: any;
+
+    static createFrom(source: any = {}) {
+      return new GraphParameterVo(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.nodeEthereumUrl = source['nodeEthereumUrl'];
+      this.ethereumUrl = source['ethereumUrl'];
+      this.ethereumNetwork = source['ethereumNetwork'];
+      this.indexerAddress = source['indexerAddress'];
+      this.mnemonic = source['mnemonic'];
+      this.applicationId = source['applicationId'];
+      this.name = source['name'];
+      this.plugin = source['plugin'];
+      this.status = source['status'];
+      this.createdAt = this.convertValues(source['createdAt'], null);
+      this.updatedAt = this.convertValues(source['updatedAt'], null);
+    }
+
+    convertValues(a: any, classs: any, asMap: boolean = false): any {
+      if (!a) {
+        return a;
+      }
+      if (a.slice) {
+        return (a as any[]).map((elem) => this.convertValues(elem, classs));
+      } else if ('object' === typeof a) {
+        if (asMap) {
+          for (const key of Object.keys(a)) {
+            a[key] = new classs(a[key]);
+          }
+          return a;
+        }
+        return new classs(a);
+      }
+      return a;
+    }
+  }
+}
+
+export namespace account {
+  export class Account {
+    publicKey: string;
+    wsUrl: string;
+    orderIndex: number;
+    peerId: string;
+
+    static createFrom(source: any = {}) {
+      return new Account(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.publicKey = source['publicKey'];
+      this.wsUrl = source['wsUrl'];
+      this.orderIndex = source['orderIndex'];
+      this.peerId = source['peerId'];
+    }
+  }
+}
+
 export namespace resource {
   export class Resource {
     peerId: string;
@@ -174,236 +415,6 @@ export namespace deploy {
         return new classs(a);
       }
       return a;
-    }
-  }
-}
-
-export namespace application {
-  export class AddApplicationParam {
-    name: string;
-    plugin: string;
-
-    static createFrom(source: any = {}) {
-      return new AddApplicationParam(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.name = source['name'];
-      this.plugin = source['plugin'];
-    }
-  }
-  export class Application {
-    id: number;
-    name: string;
-    plugin: string;
-    status: number;
-    p2pPort: number;
-    // Go type: time.Time
-    createdAt: any;
-    // Go type: time.Time
-    updatedAt: any;
-    // Go type: gorm.DeletedAt
-    deletedAt: any;
-
-    static createFrom(source: any = {}) {
-      return new Application(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.id = source['id'];
-      this.name = source['name'];
-      this.plugin = source['plugin'];
-      this.status = source['status'];
-      this.p2pPort = source['p2pPort'];
-      this.createdAt = this.convertValues(source['createdAt'], null);
-      this.updatedAt = this.convertValues(source['updatedAt'], null);
-      this.deletedAt = this.convertValues(source['deletedAt'], null);
-    }
-
-    convertValues(a: any, classs: any, asMap: boolean = false): any {
-      if (!a) {
-        return a;
-      }
-      if (a.slice) {
-        return (a as any[]).map((elem) => this.convertValues(elem, classs));
-      } else if ('object' === typeof a) {
-        if (asMap) {
-          for (const key of Object.keys(a)) {
-            a[key] = new classs(a[key]);
-          }
-          return a;
-        }
-        return new classs(a);
-      }
-      return a;
-    }
-  }
-  export class PageApplicationVo {
-    items: Application[];
-    total: number;
-
-    static createFrom(source: any = {}) {
-      return new PageApplicationVo(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.items = this.convertValues(source['items'], Application);
-      this.total = source['total'];
-    }
-
-    convertValues(a: any, classs: any, asMap: boolean = false): any {
-      if (!a) {
-        return a;
-      }
-      if (a.slice) {
-        return (a as any[]).map((elem) => this.convertValues(elem, classs));
-      } else if ('object' === typeof a) {
-        if (asMap) {
-          for (const key of Object.keys(a)) {
-            a[key] = new classs(a[key]);
-          }
-          return a;
-        }
-        return new classs(a);
-      }
-      return a;
-    }
-  }
-  export class ApplyVo {
-    id: number;
-    // Go type: time.Time
-    createdAt: any;
-    // Go type: time.Time
-    updatedAt: any;
-    name: string;
-    plugin: string;
-    status: number;
-
-    static createFrom(source: any = {}) {
-      return new ApplyVo(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.id = source['id'];
-      this.createdAt = this.convertValues(source['createdAt'], null);
-      this.updatedAt = this.convertValues(source['updatedAt'], null);
-      this.name = source['name'];
-      this.plugin = source['plugin'];
-      this.status = source['status'];
-    }
-
-    convertValues(a: any, classs: any, asMap: boolean = false): any {
-      if (!a) {
-        return a;
-      }
-      if (a.slice) {
-        return (a as any[]).map((elem) => this.convertValues(elem, classs));
-      } else if ('object' === typeof a) {
-        if (asMap) {
-          for (const key of Object.keys(a)) {
-            a[key] = new classs(a[key]);
-          }
-          return a;
-        }
-        return new classs(a);
-      }
-      return a;
-    }
-  }
-  export class UpdateApplicationParam {
-    id: number;
-    name: string;
-    plugin: string;
-
-    static createFrom(source: any = {}) {
-      return new UpdateApplicationParam(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.id = source['id'];
-      this.name = source['name'];
-      this.plugin = source['plugin'];
-    }
-  }
-}
-
-export namespace graph {
-  export class GraphParameterVo {
-    nodeEthereumUrl: string;
-    ethereumUrl: string;
-    ethereumNetwork: string;
-    indexerAddress: string;
-    mnemonic: string;
-    applicationId: number;
-    name: string;
-    plugin: string;
-    status: number;
-    // Go type: time.Time
-    createdAt: any;
-    // Go type: time.Time
-    updatedAt: any;
-
-    static createFrom(source: any = {}) {
-      return new GraphParameterVo(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.nodeEthereumUrl = source['nodeEthereumUrl'];
-      this.ethereumUrl = source['ethereumUrl'];
-      this.ethereumNetwork = source['ethereumNetwork'];
-      this.indexerAddress = source['indexerAddress'];
-      this.mnemonic = source['mnemonic'];
-      this.applicationId = source['applicationId'];
-      this.name = source['name'];
-      this.plugin = source['plugin'];
-      this.status = source['status'];
-      this.createdAt = this.convertValues(source['createdAt'], null);
-      this.updatedAt = this.convertValues(source['updatedAt'], null);
-    }
-
-    convertValues(a: any, classs: any, asMap: boolean = false): any {
-      if (!a) {
-        return a;
-      }
-      if (a.slice) {
-        return (a as any[]).map((elem) => this.convertValues(elem, classs));
-      } else if ('object' === typeof a) {
-        if (asMap) {
-          for (const key of Object.keys(a)) {
-            a[key] = new classs(a[key]);
-          }
-          return a;
-        }
-        return new classs(a);
-      }
-      return a;
-    }
-  }
-}
-
-export namespace account {
-  export class Account {
-    publicKey: string;
-    wsUrl: string;
-    orderIndex: number;
-    peerId: string;
-
-    static createFrom(source: any = {}) {
-      return new Account(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.publicKey = source['publicKey'];
-      this.wsUrl = source['wsUrl'];
-      this.orderIndex = source['orderIndex'];
-      this.peerId = source['peerId'];
     }
   }
 }

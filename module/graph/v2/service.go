@@ -36,9 +36,8 @@ func (g *ServiceImpl) SaveGraphDeployParameterAndApply(addData AddParam) (bool, 
 		}
 		deployData.Application = applyData
 		deployData.LeaseTerm = addData.LeaseTerm
-		deployData.Network = addData.Network
 		deployData.Mnemonic = addData.Mnemonic
-		deployData.PledgeAmount = addData.PledgeAmount
+		deployData.PledgeAmount = addData.StakingAmount
 		deployData.ApplicationID = applyData.ID
 		if err := tx.Create(&deployData).Error; err != nil {
 			return err
@@ -51,9 +50,7 @@ func (g *ServiceImpl) SaveGraphDeployParameterAndApply(addData AddParam) (bool, 
 	var deploymentData deploy.DeployParameter
 	deploymentData.Initialization.AccountMnemonic = addData.Mnemonic
 	deploymentData.Initialization.LeaseTerm = addData.LeaseTerm
-	deploymentData.Staking.NetworkUrl = addData.Network
-	deploymentData.Staking.PledgeAmount = addData.PledgeAmount
-	deploymentData.Deployment.EthereumUrl = addData.Network
+	deploymentData.Staking.PledgeAmount = addData.StakingAmount
 	jsonData, err := json.Marshal(deploymentData)
 	if err != nil {
 		return false, err
