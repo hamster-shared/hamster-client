@@ -42,7 +42,11 @@
     "web3": "^1.7.4",
     "xterm": "^4.19.0",
     "xterm-addon-attach": "^0.6.0",
-    "xterm-addon-fit": "^0.5.0"
+    "xterm-addon-fit": "^0.5.0",
+    "@urql/core": "2.3.6",
+    "isomorphic-fetch": "3.0.0",
+    "@graphprotocol/indexer-common": "^0.19.0",
+    "graphql-tag": "2.12.6"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
