@@ -1,6 +1,7 @@
 package config
 
 const (
+	DefaultPolkadotNode = "ws://127.0.0.1:9944"
 	// HttpGetResource get my resources
 	HttpGetResource = "http://42.192.53.10:8888/api/resources/use"
 	// HttpGetCode get verification code

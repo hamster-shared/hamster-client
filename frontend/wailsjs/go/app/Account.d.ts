@@ -3,6 +3,8 @@
 import { context } from '../models';
 import { account } from '../models';
 
+export function IsAccount(): Promise<boolean>;
+
 export function IsAccountSetting(): Promise<boolean>;
 
 export function SaveOrderIndex(arg1: number): void;
@@ -10,5 +12,3 @@ export function SaveOrderIndex(arg1: number): void;
 export function WailsInit(arg1: context.Context): Promise<Error>;
 
 export function GetAccountInfo(): Promise<account.Account | Error>;
-
-export function IsAccount(): Promise<boolean>;

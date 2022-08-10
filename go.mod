@@ -8,7 +8,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/ethereum/go-ethereum v1.10.12
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/google/uuid v1.3.0
 	github.com/ipfs/go-datastore v0.4.6
 	github.com/ipfs/go-ipfs v0.10.0
 	github.com/jbenet/goprocess v0.1.4
@@ -47,6 +46,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/gopacket v1.1.19 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect

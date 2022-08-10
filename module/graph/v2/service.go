@@ -5,22 +5,30 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
 	"gorm.io/gorm"
 	"hamster-client/config"
+	"hamster-client/module/account"
 	"hamster-client/module/application"
 	"hamster-client/module/deploy"
 	"hamster-client/module/keystorage"
+	"hamster-client/module/p2p"
+	queue2 "hamster-client/module/queue"
 	"strconv"
 )
 
 type ServiceImpl struct {
-	ctx               context.Context
-	db                *gorm.DB
-	keyStorageService keystorage.Service
+	ctx                context.Context
+	db                 *gorm.DB
+	keyStorageService  keystorage.Service
+	accountService     account.Service
+	applicationService application.Service
+	p2pServer          p2p.Service
+	deployService      deploy.Service
 }
 
-func NewServiceImpl(ctx context.Context, db *gorm.DB, keyStorageService keystorage.Service) ServiceImpl {
-	return ServiceImpl{ctx, db, keyStorageService}
+func NewServiceImpl(ctx context.Context, db *gorm.DB, keyStorageService keystorage.Service, accountService account.Service, applicationService application.Service, p2pServer p2p.Service, deployService deploy.Service) ServiceImpl {
+	return ServiceImpl{ctx, db, keyStorageService, accountService, applicationService, p2pServer, deployService}
 }
 
 func (g *ServiceImpl) SaveGraphDeployParameterAndApply(addData AddParam) (AddApplicationVo, error) {
@@ -68,6 +76,7 @@ func (g *ServiceImpl) SaveGraphDeployParameterAndApply(addData AddParam) (AddApp
 	g.keyStorageService.Set("graph_"+strconv.Itoa(int(applyData.ID)), string(jsonData))
 	applicationVo.Result = true
 	applicationVo.ID = applyData.ID
+	go g.deployGraphJob(int(applyData.ID))
 	return applicationVo, nil
 }
 
@@ -87,4 +96,26 @@ func (g *ServiceImpl) DeleteGraphDeployParameterAndApply(id int) (bool, error) {
 	//delete key storage
 	//stop docker
 	return true, nil
+}
+
+func (g *ServiceImpl) deployGraphJob(applicationId int) {
+	stakingJob := NewGraphStakingJob(g.keyStorageService, applicationId)
+	var accountInfo account.Account
+	accountInfo, err := g.accountService.GetAccount()
+	if err != nil {
+		accountInfo.WsUrl = config.DefaultPolkadotNode
+	}
+	substrateApi, _ := gsrpc.NewSubstrateAPI(accountInfo.WsUrl)
+	waitResourceJob, _ := NewWaitResourceJob(substrateApi, g.accountService, g.applicationService, g.p2pServer, applicationId)
+
+	pullJob := NewPullImageJob(g.applicationService, applicationId)
+
+	deployJob := NewServiceDeployJob(g.keyStorageService, g.deployService, applicationId)
+
+	queue, err := queue2.NewQueue(strconv.Itoa(applicationId), &stakingJob, waitResourceJob, &pullJob, &deployJob)
+	if err != nil {
+		fmt.Println("new queue failed,err is: ", err)
+	}
+	channel := make(chan struct{})
+	go queue.Start(channel)
 }
