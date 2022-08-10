@@ -87,14 +87,14 @@ func (s *ServiceImpl) DeployGraph(id int, sendData DeployParams) (bool, error) {
 		return false, queryResult.Error
 	}
 	providerUrl := fmt.Sprintf(config.Httpprovider, data.P2pForwardPort)
-	runtime.LogInfo(s.ctx, "start Deploy the graph")
+	fmt.Println("start Deploy the graph:")
 	res, err := s.httpUtil.NewRequest().SetBody(sendData).Post(providerUrl)
 	if err != nil {
-		runtime.LogError(s.ctx, "DeployTheGraph http error:"+err.Error())
+		fmt.Println("DeployTheGraph http error:", err.Error())
 		return false, err
 	}
 	if !res.IsSuccess() {
-		runtime.LogError(s.ctx, "DeployTheGraph Response error: "+res.Status())
+		fmt.Println("DeployTheGraph Response error: ", res.Status())
 		return false, errors.New(res.Status())
 	}
 	//Modification status is in deployment

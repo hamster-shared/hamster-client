@@ -49,7 +49,7 @@ func TestDeploy(t *testing.T) {
 	deployService := deploy.NewServiceImpl(ctx, httpUtil, db, &keyStorageService, &accountService, &p2pService)
 	//create application
 	var addParam AddParam
-	addParam.Name = "Service one9"
+	addParam.Name = "Service one12"
 	addParam.ThegraphIndexer = "chef moon high razor hockey steak better version myself large purchase cave"
 	addParam.SelectNodeType = "The Graph"
 	addParam.StakingAmount = 100000
