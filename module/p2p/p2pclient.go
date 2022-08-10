@@ -31,4 +31,5 @@ type Service interface {
 	GetProviderLinks() *[]LinkInfo
 	JudgeP2pReconnection() bool
 	ReconnectionProLink() (bool, error)
+	QueryLinks(protocol string) *[]LinkInfo
 }

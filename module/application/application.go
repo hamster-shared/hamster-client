@@ -11,6 +11,7 @@ type Application struct {
 	SelectNodeType string         `json:"selectNodeType"` //apply plugin
 	Status         int            `json:"status"`         //apply status 0: not deploy 1:deployed 2:ALL 3:wait resource 4:In deployment 5:deploy failed
 	P2pForwardPort int            `json:"p2pForwardPort"`
+	CliForwardPort int            `json:"cliForwardPort"`
 	GrtIncome      int64          `json:"grtIncome"`
 	LeaseTerm      int            `json:"leaseTerm"`
 	CreatedAt      time.Time      `json:"createdAt"`
@@ -61,4 +62,7 @@ type Service interface {
 	UpdateApplicationStatus(id, status int) error
 	UpdateApplicationP2pForwardPort(id, port int) error
 	QueryNextP2pPort() int
+	QueryCliP2pPort(id int) (int, error)
+	QueryNextCliP2pPort() int
+	UpdateApplicationCliForwardPort(id, port int) error
 }

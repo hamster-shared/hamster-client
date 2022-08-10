@@ -122,3 +122,31 @@ func (a *ServiceImpl) QueryNextP2pPort() int {
 	}
 	return data.P2pForwardPort + 1
 }
+
+func (a *ServiceImpl) QueryCliP2pPort(id int) (int, error) {
+	var data Application
+	result := a.db.Where("id = ? ", id).First(&data)
+	if result.Error != nil {
+		return data.CliForwardPort, result.Error
+	}
+	return data.CliForwardPort, nil
+}
+
+func (a *ServiceImpl) UpdateApplicationCliForwardPort(id, port int) error {
+	var applyData Application
+	result := a.db.Model(applyData).Where("id = ?", id).Update("cli_forward_port", port)
+	return result.Error
+}
+
+func (a *ServiceImpl) QueryNextCliP2pPort() int {
+	var data Application
+	tx := a.db.Model(Application{})
+	result := tx.Order("cli_forward_port desc").Limit(1).First(&data)
+	if result.Error != nil {
+		return 44000
+	}
+	if data.P2pForwardPort < 44000 {
+		return 44000
+	}
+	return data.P2pForwardPort + 1
+}

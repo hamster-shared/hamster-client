@@ -97,3 +97,7 @@ func TestDeploy(t *testing.T) {
 
 	fmt.Println(info)
 }
+
+func TestStringSplice(t *testing.T) {
+
+}

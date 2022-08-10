@@ -261,3 +261,23 @@ func (s *ServiceImpl) JudgePort(port int) bool {
 	}
 	return false
 }
+
+func (s *ServiceImpl) QueryLinks(protocol string) *[]LinkInfo {
+	runtime.LogWarning(s.ctx, "GetLinks start")
+	var links []LinkInfo
+	client, err := s.getP2pClient()
+	if err != nil {
+		return &links
+	}
+	outPut := client.List()
+	for _, value := range outPut.Listeners {
+		linkInfo := LinkInfo{Protocol: value.Protocol, ListenAddress: value.ListenAddress, TargetAddress: value.TargetAddress}
+		err := client.CheckForwardHealth(protocol, value.TargetAddress)
+		linkInfo.Status = err == nil
+		runtime.LogInfo(s.ctx, fmt.Sprintf("GetLinks %s\n", linkInfo.Status))
+		if linkInfo.Protocol == protocol {
+			links = append(links, linkInfo)
+		}
+	}
+	return &links
+}

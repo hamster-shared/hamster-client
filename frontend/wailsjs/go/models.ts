@@ -1,3 +1,20 @@
+export namespace wallet {
+  export class WalletVo {
+    address: string;
+    addressJson: string;
+
+    static createFrom(source: any = {}) {
+      return new WalletVo(source);
+    }
+
+    constructor(source: any = {}) {
+      if ('string' === typeof source) source = JSON.parse(source);
+      this.address = source['address'];
+      this.addressJson = source['addressJson'];
+    }
+  }
+}
+
 export namespace deploy {
   export class Deployment {
     nodeEthereumUrl: string;
@@ -414,23 +431,6 @@ export namespace app {
         return new classs(a);
       }
       return a;
-    }
-  }
-}
-
-export namespace wallet {
-  export class WalletVo {
-    address: string;
-    addressJson: string;
-
-    static createFrom(source: any = {}) {
-      return new WalletVo(source);
-    }
-
-    constructor(source: any = {}) {
-      if ('string' === typeof source) source = JSON.parse(source);
-      this.address = source['address'];
-      this.addressJson = source['addressJson'];
     }
   }
 }
