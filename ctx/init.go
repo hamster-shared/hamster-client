@@ -163,8 +163,8 @@ func (a *App) Startup(context context.Context) {
 	a.initService()
 	//initialize app
 	a.initApp()
-	a.ChainListener.CancelListen()
-	a.ChainListener.StartListen(a.gormDB, *a.KeyStorageService, a.DeployService)
+	//a.ChainListener.CancelListen()
+	//a.ChainListener.StartListen(a.gormDB, *a.KeyStorageService, a.DeployService)
 }
 
 // DomReady is called after the front-end dom has been loaded

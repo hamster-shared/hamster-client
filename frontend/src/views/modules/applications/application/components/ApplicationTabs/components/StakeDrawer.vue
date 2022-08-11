@@ -5,7 +5,7 @@
         <div class="bg-[#D8D8D8] rounded-[50%] w-[60px] h-[60px]"></div>
         <div class="ml-[16px]">
           <div>{{ t('applications.see.stake') }}</div>
-          <div class="text-[20px] font-bold">0xd5f6—1a6b79</div>
+          <div class="text-[20px] font-bold">{{ addressAvatar }}</div>
         </div>
       </div>
       <div class="grid grid-cols-2 text-center mt-[20px]">
@@ -15,7 +15,7 @@
             <label class="text-[#7B8082] ml-[6px]">{{ t('applications.see.yStake') }}</label>
           </div>
           <div>
-            <label class="text-[18px] font-bold">0</label>
+            <label class="text-[18px] font-bold">{{ stakeAmount }}</label>
             <label class="text-[12px]">{{ t('applications.see.grt') }}</label>
           </div>
         </div>
@@ -25,7 +25,7 @@
             <label class="text-[#7B8082] ml-[6px]">{{ t('applications.see.wBalance') }}</label>
           </div>
           <div>
-            <label class="text-[18px] font-bold">0</label>
+            <label class="text-[18px] font-bold">{{ addressBalance }}</label>
             <label class="text-[12px]">{{ t('applications.see.grt') }}</label>
           </div>
         </div>
@@ -33,11 +33,17 @@
     </div>
     <div class="px-[20px] pb-[60px]">
       <div class="font-bold my-[10px]">{{ t('applications.reward.stakeAmount') }}</div>
-      <Input class="border !border-[#043CC1] rounded-[8px] h-[60px] px-[10px]" value="10000000">
+      <Input
+        class="border !border-[#043CC1] rounded-[8px] h-[60px] px-[10px]"
+        v-model:value="inputStakeAmount"
+      >
         <template #suffix>
           <div>
             <label class="text-[#7B8082] mr-[10px]">{{ t('applications.see.grt') }}</label>
-            <label class="bg-[#63A0FA] px-[20px] py-[8px] rounded-[4px] text-white">
+            <label
+              class="bg-[#63A0FA] px-[20px] py-[8px] rounded-[4px] text-white"
+              @click="maxClick"
+            >
               {{ t('applications.see.max') }}
             </label>
           </div>
@@ -59,12 +65,21 @@
       <div class="flex my-[10px]">
         <div class="seq-div !bg-[#043CC1]">1</div>{{ t('applications.see.gtrStak') }}
       </div>
-      <Button type="primary" size="large">{{ t('applications.see.grtAccess') }}</Button>
+      <Button type="primary" size="large" @click="approve" :loading="approveLoading">{{
+        t('applications.see.grtAccess')
+      }}</Button>
       <div class="flex my-[10px]">
-        <div class="seq-div">2</div
+        <div :class="stakeDisabled ? 'seq-div' : 'seq-div !bg-[#043CC1]'">2</div
         ><label class="text-[#7B8082]">{{ t('applications.see.gtrStak') }}</label>
       </div>
-      <Button type="primary" size="large" disabled>{{ t('applications.see.stake') }}</Button>
+      <Button
+        type="primary"
+        size="large"
+        :disabled="stakeDisabled"
+        @click="stake"
+        :loading="stakingLoading"
+        >{{ t('applications.see.stake') }}</Button
+      >
     </div>
   </Form>
 </template>
@@ -72,8 +87,89 @@
   import { useI18n } from '/@/hooks/web/useI18n';
   import { SvgIcon } from '/@/components/Icon';
   import { Button, Input, Form } from 'ant-design-vue';
-
+  import { string } from 'vue-types';
+  import { computed, ref } from 'vue';
+  import { buildContract, createWeb3Api, runContractMethod, web3Abi } from '/@/utils/web3Util';
+  import { useMessage } from '/@/hooks/web/useMessage';
+  // defines
+  const props = defineProps({
+    stakeAmount: string,
+    addressBalance: string,
+    addressAvatar: string,
+    deployInfo: Object as PropType<Recordable>,
+  });
   const { t } = useI18n();
+  const inputStakeAmount = ref();
+  const approveLoading = ref(false);
+  const stakeDisabled = ref(true);
+  const stakingLoading = ref(false);
+  const { createErrorModal } = useMessage();
+  const maxClick = () => {
+    inputStakeAmount.value = props.addressBalance;
+  };
+  const web3Api = computed(() => {
+    const { initialization, staking } = props.deployInfo;
+    const accountMnemonic = initialization.accountMnemonic;
+    const networkUrl = staking.networkUrl;
+    if (accountMnemonic && networkUrl) {
+      return createWeb3Api(networkUrl, accountMnemonic);
+    }
+    return undefined;
+  });
+  const approve = async () => {
+    const api = web3Api.value;
+    if (api && api.__config) {
+      approveLoading.value = true;
+      const { erc20ContractAddress } = api.__config;
+      const address = props.deployInfo?.staking.agentAddress;
+      const contract = buildContract(api, web3Abi.ecr20Abi, erc20ContractAddress);
+      inputStakeAmount.value = inputStakeAmount.value || 1;
+      try {
+        await runContractMethod({
+          api,
+          contract,
+          method: 'approve',
+          methodArgs: [address, api.utils.toWei(inputStakeAmount.value.toString())],
+          type: 'send',
+        });
+        approveLoading.value = false;
+        stakeDisabled.value = false;
+      } catch (e: any) {
+        approveLoading.value = false;
+        createErrorModal({
+          title: t('common.errorTip'),
+          content: e.message,
+        });
+        console.info('Approve Staking Proxy Contract Error', e);
+      }
+    }
+  };
+  const stake = async () => {
+    const api = web3Api.value;
+    if (api && api.__config) {
+      stakingLoading.value = true;
+      const address = props.deployInfo?.staking.agentAddress;
+      const contract = buildContract(api, web3Abi.stakeDistributionProxyAbi, address);
+      try {
+        await runContractMethod({
+          api,
+          contract,
+          method: 'rePledge',
+          methodArgs: [api.utils.toWei(inputStakeAmount.value.toString())],
+          type: 'send',
+        });
+        stakingLoading.value = false;
+      } catch (e: any) {
+        stakingLoading.value = false;
+        createErrorModal({
+          title: t('common.errorTip'),
+          content: e.message,
+        });
+        console.info('Approve Staking Proxy Contract Error', e);
+      }
+    }
+  };
+  // const closeStakeDrawer = () => {};
 </script>
 <style lang="less" scoped>
   .stake-box {

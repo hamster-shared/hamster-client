@@ -71,9 +71,9 @@ func (s *Setting) Setting(publicKey string, wsUrl string) (bool, error) {
 	accountInfo.WsUrl = wsUrl
 	s.accountService.SaveAccount(&accountInfo)
 	// close go func
-	s.chainListener.CancelListen()
+	//s.chainListener.CancelListen()
 	//start go func
-	s.chainListener.StartListen(s.db, s.keyStorageService, s.deployService)
+	//s.chainListener.StartListen(s.db, s.keyStorageService, s.deployService)
 	return true, nil
 }
 

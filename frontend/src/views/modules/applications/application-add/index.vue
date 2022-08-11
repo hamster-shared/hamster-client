@@ -76,7 +76,7 @@
   import { Form, FormItem, Input, Select, Button } from 'ant-design-vue';
 
   const { t } = useI18n();
-  const { router } = useRouter();
+  const router = useRouter();
   const { createErrorModal } = useMessage();
 
   const pluginOptions = pluginConfigs.map((item) => ({
@@ -99,8 +99,9 @@
 
     try {
       const params = toRaw(formData);
+      params['leaseTerm'] = parseInt(params['leaseTerm']);
+      params['stakingAmount'] = parseInt(params['leaseTerm']);
       const { id } = await AddApplication(params);
-
       router.push(`/applications/${id}`);
     } catch (e: any) {
       createErrorModal({
