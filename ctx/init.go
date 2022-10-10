@@ -10,6 +10,7 @@ import (
 	"hamster-client/app"
 	"hamster-client/module/account"
 	"hamster-client/module/application"
+	"hamster-client/module/chainmanager"
 	"hamster-client/module/common"
 	"hamster-client/module/deploy"
 	"hamster-client/module/graph"
@@ -41,17 +42,19 @@ type App struct {
 	QueueService            queue.Service
 	GraphDeployParamService param.Service
 	CliService              cli.Service
+	ChainManagerService     chainmanager.Manager
 
-	AccountApp     app.Account
-	P2pApp         app.P2p
-	ResourceApp    app.Resource
-	SettingApp     app.Setting
-	WalletApp      app.Wallet
-	DeployApp      app.Deploy
-	ApplicationApp app.Application
-	GraphApp       app.Graph
-	KeyStorageApp  app.KeyStorage
-	QueueApp       app.Queue
+	AccountApp      app.Account
+	P2pApp          app.P2p
+	ResourceApp     app.Resource
+	SettingApp      app.Setting
+	WalletApp       app.Wallet
+	DeployApp       app.Deploy
+	ApplicationApp  app.Application
+	GraphApp        app.Graph
+	KeyStorageApp   app.KeyStorage
+	QueueApp        app.Queue
+	ChainManagerApp app.ChainManager
 }
 
 func NewApp() *App {
@@ -123,6 +126,7 @@ func (a *App) initService() {
 	a.GraphDeployParamService = &graphDeployParamServiceImpl
 	cliServiceImpl := cli.NewServiceImpl(a.ctx, a.gormDB, *a.KeyStorageService, a.AccountService, a.ApplicationService, a.P2pService, a.DeployService)
 	a.CliService = &cliServiceImpl
+	a.ChainManagerService = chainmanager.NewManager(a.gormDB, a.ApplicationService, a.P2pService, a.AccountService, a.WalletService)
 }
 
 func (a *App) initApp() {
@@ -136,6 +140,7 @@ func (a *App) initApp() {
 	a.GraphApp = app.NewGraphApp(a.GraphParamsService, a.CliService, a.GraphDeployParamService)
 	a.KeyStorageApp = app.NewKeyStorageApp(a.KeyStorageService)
 	a.QueueApp = app.NewQueueApp(a.QueueService)
+	a.ChainManagerApp = app.NewChainManagerApp(a.ChainManagerService)
 }
 
 func initConfigPath() string {
@@ -179,16 +184,16 @@ func (a *App) Shutdown(ctx context.Context) {
 }
 
 func (a *App) initAllQueue() {
-	fmt.Println("start all queue")
+	fmt.Println("start all chain queue")
 	list, err := a.ApplicationService.ApplicationList(0, 1000, "", application.All)
 	if err != nil {
 		fmt.Println("get ApplicationList error:", err)
 		return
 	}
-	for _, app := range list.Items {
-		err := a.GraphDeployParamService.RetryDeployGraphJob(int(app.ID), false)
+	for _, item := range list.Items {
+		err := a.ChainManagerApp.RetryStartQueue(int(item.ID), false)
 		if err != nil {
-			fmt.Printf("init queue error: %s, app id: %d", err, app.ID)
+			fmt.Printf("init queue error: %s, app id: %d", err, item.ID)
 			continue
 		}
 	}

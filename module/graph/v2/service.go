@@ -49,8 +49,8 @@ func (g *ServiceImpl) SaveGraphDeployParameterAndApply(addParam AddParam) (AddAp
 
 	if addParam.ServiceType == application.TYPE_Thegraph {
 		saveService = &ThegraphDeploySaveServiceImpl{*g}
-	} else if val, isKeyExists := application.GetDeployEnumMap()[addParam.ServiceType]; isKeyExists {
-		saveService = &CommonDeploySaveServiceImpl{*g, val}
+		//} else if val, isKeyExists := application.GetDeployEnumMap()[addParam.ServiceType]; isKeyExists {
+		//saveService = &CommonDeploySaveServiceImpl{*g, val}
 	} else {
 		return AddApplicationVo{}, errors.New("Unsupport deploy type!")
 	}
