@@ -3,10 +3,10 @@ package app
 import "hamster-client/module/queue"
 
 type Queue struct {
-	service queue.Service
+	service queue.Client
 }
 
-func NewQueueApp(service queue.Service) Queue {
+func NewQueueApp(service queue.Client) Queue {
 	return Queue{
 		service: service,
 	}

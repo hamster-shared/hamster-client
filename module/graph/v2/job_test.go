@@ -40,14 +40,14 @@ func TestDeploy(t *testing.T) {
 	accountService := account.NewServiceImpl(ctx, db, httpUtil)
 	applicationService := application.NewServiceImpl(ctx, db)
 	p2pService := p2p.NewServiceImpl(ctx, db, &accountService)
-	keyStorageService := keystorage.NewServiceImpl(ctx, db)
+	keyStorageService := keystorage.NewClient(db)
 	walletService := wallet.NewServiceImpl(ctx, db)
 	deployService := deploy.NewServiceImpl(ctx, httpUtil, db, &keyStorageService, &p2pService, &walletService, &applicationService)
 	queueService := queue2.NewServiceImpl()
 	graphParamService := NewServiceImpl(ctx, db, keyStorageService, &accountService, &applicationService, &p2pService, &deployService, &walletService, queueService)
 	//create application
 	var addParam AddParam
-	addParam.Name = "Service one12"
+	addParam.Name = "Client one12"
 	addParam.ThegraphIndexer = "chef moon high razor hockey steak better version myself large purchase cave"
 	addParam.SelectNodeType = "thegraph_rinkeby"
 	addParam.StakingAmount = 100000
@@ -123,7 +123,7 @@ func getGraphParamService() ServiceImpl {
 	accountService := account.NewServiceImpl(ctx, db, httpUtil)
 	applicationService := application.NewServiceImpl(ctx, db)
 	p2pService := p2p.NewServiceImpl(ctx, db, &accountService)
-	keyStorageService := keystorage.NewServiceImpl(ctx, db)
+	keyStorageService := keystorage.NewClient(db)
 	walletService := wallet.NewServiceImpl(ctx, db)
 	deployService := deploy.NewServiceImpl(ctx, httpUtil, db, &keyStorageService, &p2pService, &walletService, &applicationService)
 	queueService := queue2.NewServiceImpl()

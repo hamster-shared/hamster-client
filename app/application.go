@@ -3,28 +3,31 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"hamster-client/config"
 	"hamster-client/module/application"
 	"hamster-client/module/deploy"
 	param "hamster-client/module/graph/v2"
 	"hamster-client/module/p2p"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Application struct {
-	ctx                     context.Context
-	applicationService      application.Service
-	graphDeployParamService param.Service
-	p2pService              p2p.Service
-	deployService           deploy.Service
+	ctx                context.Context
+	applicationService application.Service
+	p2pService         p2p.Service
+	deployService      deploy.Service
 }
 
-func NewApplicationApp(service application.Service, graphDeployParamService param.Service, p2pService p2p.Service, deployService deploy.Service) Application {
+func NewApplicationApp(
+	service application.Service,
+	p2pService p2p.Service,
+	deployService deploy.Service,
+) Application {
 	return Application{
-		applicationService:      service,
-		graphDeployParamService: graphDeployParamService,
-		p2pService:              p2pService,
-		deployService:           deployService,
+		applicationService: service,
+		p2pService:         p2pService,
+		deployService:      deployService,
 	}
 }
 
@@ -34,24 +37,36 @@ func (a *Application) WailsInit(ctx context.Context) error {
 }
 
 // AddApplication add application
-func (a *Application) AddApplication(applicationData param.AddParam) (param.AddApplicationVo, error) {
-	return a.graphDeployParamService.SaveGraphDeployParameterAndApply(applicationData)
+func (a *Application) AddApplication(
+	applicationData param.AddParam,
+) (param.AddApplicationVo, error) {
+	// TODO: add application
+	return param.AddApplicationVo{}, nil
 }
 
 // UpdateApplication edit application
-func (a *Application) UpdateApplication(application application.UpdateApplicationParam) (bool, error) {
-	return a.applicationService.UpdateApplication(int(application.ID), application.Name, application.SelectNodeType)
+func (a *Application) UpdateApplication(
+	application application.UpdateApplicationParam,
+) (bool, error) {
+	return a.applicationService.UpdateApplication(
+		int(application.ID),
+		application.Name,
+		application.SelectNodeType,
+	)
 }
 
 func (a *Application) DeleteApplication(id int) (bool, error) {
 	fmt.Println("DeleteApplication: ", id)
-	result, err := a.graphDeployParamService.DeleteGraphDeployParameterAndApply(id)
-	fmt.Println("result: ", result, "err: ", err)
-	return result, err
+	// TODO: delete application
+	return true, nil
 }
 
 // ApplicationList Paging query application list
-func (a *Application) ApplicationList(page, pageSize int, name string, status int) (application.PageApplicationVo, error) {
+func (a *Application) ApplicationList(
+	page, pageSize int,
+	name string,
+	status int,
+) (application.PageApplicationVo, error) {
 	return a.applicationService.ApplicationList(page, pageSize, name, status)
 }
 
@@ -65,7 +80,13 @@ func (a *Application) QueryApplicationById(id int) (application.ApplyVo, error) 
 
 	if vo.Status == application.Running || vo.Status == application.Offline {
 		_ = a.p2pService.LinkByProtocol(config.ProviderProtocol, vo.P2pForwardPort, vo.PeerId)
-		containerIds := []string{"graph-node", "postgres", "index-service", "index-agent", "index-cli"}
+		containerIds := []string{
+			"graph-node",
+			"postgres",
+			"index-client",
+			"index-agent",
+			"index-cli",
+		}
 		status, err := a.deployService.QueryGraphStatus(int(vo.ID), containerIds...)
 		fmt.Println("status:", status, "error: ", err)
 		if err != nil || status != 1 {
@@ -76,10 +97,6 @@ func (a *Application) QueryApplicationById(id int) (application.ApplyVo, error) 
 	}
 
 	return vo, err
-}
-
-func (a *Application) RefreshGraphDeployJob(applicationId int) error {
-	return a.graphDeployParamService.RetryDeployGraphJob(applicationId, true)
 }
 
 func (a *Application) ReconnectionProLink(applicationId int) (bool, error) {

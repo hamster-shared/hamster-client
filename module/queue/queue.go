@@ -31,18 +31,6 @@ type StatusInfo struct {
 	Error  string     `json:"error,omitempty"`
 }
 
-type Queue interface {
-	ID() int
-	GetStatus() (info []StatusInfo, err error)
-	Start(done chan struct{})
-	Stop() error
-	Reset()
-	saveStatus() error
-	loadStatus() error
-	InitStatus()
-	SetJobStatus(jobName string, statusInfo StatusInfo)
-}
-
 type queue struct {
 	id            int
 	db            *gorm.DB
@@ -176,7 +164,7 @@ func (q *queue) saveStatus() error {
 		return err
 	}
 	log.Infof("save status to db for queue %d", q.id)
-	keystorage.NewServiceImpl(context.Background(), q.db).Set(DB_KEY_PREFIX+strconv.Itoa(q.id), string(statusStorageJson))
+	keystorage.NewClient(q.db).Set(DB_KEY_PREFIX+strconv.Itoa(q.id), string(statusStorageJson))
 	log.Infof("save status info to db: %s", statusStorageJson)
 	return nil
 }
@@ -191,7 +179,7 @@ func (q *queue) InitStatus() {
 
 func (q *queue) loadStatus() error {
 	log.Infof("load status from db for queue %d", q.id)
-	statusStorageJson := keystorage.NewServiceImpl(context.Background(), q.db).Get(DB_KEY_PREFIX + strconv.Itoa(q.id))
+	statusStorageJson := keystorage.NewClient(q.db).Get(DB_KEY_PREFIX + strconv.Itoa(q.id))
 	if statusStorageJson == "" {
 		log.Infof("status storage not found for queue %d, init", q.id)
 		q.InitStatus()

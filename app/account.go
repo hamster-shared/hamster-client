@@ -30,10 +30,7 @@ func (s *Account) GetAccountInfo() (account.Account, error) {
 // IsAccount determine if the user exists
 func (s *Account) IsAccount() bool {
 	_, err := s.accountService.GetAccount()
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 // IsAccountSetting determine whether to configure user information

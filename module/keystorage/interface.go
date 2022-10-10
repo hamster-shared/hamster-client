@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Service interface {
+type Client interface {
 	Get(key string) string
 	Set(key, value string)
 	Delete(key string)

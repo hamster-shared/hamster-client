@@ -32,22 +32,22 @@ func TestNewServiceImpl(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want Service
+		want Client
 	}{
 		{"test1",
 			args{
 				ctx: context.Background(),
 				db:  db,
 			},
-			&ServiceImpl{
+			&client{
 				db:    db,
 				Error: nil,
 			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewServiceImpl(tt.args.ctx, tt.args.db); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewServiceImpl() = %v, want %v", got, tt.want)
+			if got := NewClient(tt.args.db); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewClient() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -93,7 +93,7 @@ func TestServiceImpl_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			self := &ServiceImpl{
+			self := &client{
 				db:    tt.fields.db,
 				Error: tt.fields.Error,
 			}
@@ -182,7 +182,7 @@ func TestServiceImpl_Set(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			self := &ServiceImpl{
+			self := &client{
 				tableName: tt.fields.tableName,
 				db:        tt.fields.db,
 				Error:     tt.fields.Error,
@@ -243,7 +243,7 @@ func TestServiceImpl_Get1(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			self := &ServiceImpl{
+			self := &client{
 				tableName: tt.fields.tableName,
 				db:        tt.fields.db,
 				Error:     tt.fields.Error,
@@ -273,7 +273,7 @@ func TestServiceImpl_Delete(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			self := &ServiceImpl{
+			self := &client{
 				tableName: tt.fields.tableName,
 				db:        tt.fields.db,
 				Error:     tt.fields.Error,
@@ -285,7 +285,7 @@ func TestServiceImpl_Delete(t *testing.T) {
 
 func TestServiceImpl_GetSet(t *testing.T) {
 	db := getDB()
-	kDB := &ServiceImpl{db: db}
+	kDB := &client{db: db}
 
 	kDB.Delete("5555")
 	if kDB.Err() != nil {

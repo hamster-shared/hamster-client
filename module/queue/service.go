@@ -1,17 +1,17 @@
 package queue
 
-type Service interface {
+type Client interface {
 	GetStatusInfo(id int) ([]StatusInfo, error)
 	StopQueue(id int) error
 }
 
-type ServiceImpl struct{}
+type client struct{}
 
-func NewServiceImpl() Service {
-	return &ServiceImpl{}
+func NewServiceImpl() Client {
+	return &client{}
 }
 
-func (s *ServiceImpl) GetStatusInfo(id int) ([]StatusInfo, error) {
+func (c *client) GetStatusInfo(id int) ([]StatusInfo, error) {
 	q, err := GetQueue(id)
 	if err != nil {
 		return nil, err
@@ -19,7 +19,7 @@ func (s *ServiceImpl) GetStatusInfo(id int) ([]StatusInfo, error) {
 	return q.(Queue).GetStatus()
 }
 
-func (s *ServiceImpl) StopQueue(id int) error {
+func (c *client) StopQueue(id int) error {
 	q, err := GetQueue(id)
 	if err != nil {
 		return nil

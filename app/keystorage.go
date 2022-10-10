@@ -7,36 +7,36 @@ import (
 )
 
 type KeyStorage struct {
-	ctx     context.Context
-	service keystorage.Service
+	ctx    context.Context
+	client keystorage.Client
 }
 
-func NewKeyStorageApp(service *keystorage.Service) KeyStorage {
+func NewKeyStorageApp(service *keystorage.Client) KeyStorage {
 	return KeyStorage{
-		ctx:     context.Background(),
-		service: *service,
+		ctx:    context.Background(),
+		client: *service,
 	}
 }
 
-func (self *KeyStorage) Get(key string) string {
-	v := self.service.Get(key)
-	if self.service.Err() != nil {
-		runtime.LogErrorf(self.ctx, "kv storage get error: %s", self.service.Err())
+func (k *KeyStorage) Get(key string) string {
+	v := k.client.Get(key)
+	if k.client.Err() != nil {
+		runtime.LogErrorf(k.ctx, "kv storage get error: %s", k.client.Err())
 		return ""
 	}
 	return v
 }
 
-func (self *KeyStorage) Set(key, value string) {
-	self.service.Set(key, value)
-	if self.service.Err() != nil {
-		runtime.LogErrorf(self.ctx, "kv storage set error: %s", self.service.Err())
+func (k *KeyStorage) Set(key, value string) {
+	k.client.Set(key, value)
+	if k.client.Err() != nil {
+		runtime.LogErrorf(k.ctx, "kv storage set error: %s", k.client.Err())
 	}
 }
 
-func (self *KeyStorage) Delete(key string) {
-	self.service.Delete(key)
-	if self.service.Err() != nil {
-		runtime.LogErrorf(self.ctx, "kv storage delete error: %s", self.service.Err())
+func (k *KeyStorage) Delete(key string) {
+	k.client.Delete(key)
+	if k.client.Err() != nil {
+		runtime.LogErrorf(k.ctx, "kv storage delete error: %s", k.client.Err())
 	}
 }

@@ -24,13 +24,13 @@ import (
 type ServiceImpl struct {
 	ctx                context.Context
 	db                 *gorm.DB
-	keyStorageService  keystorage.Service
+	keyStorageService  keystorage.Client
 	accountService     account.Service
 	applicationService application.Service
 	p2pService         p2p.Service
 	deployService      deploy.Service
 	walletService      wallet.Service
-	queueService       queue2.Service
+	queueService       queue2.Client
 }
 
 type ServiceDeploySaveService interface {
@@ -39,7 +39,7 @@ type ServiceDeploySaveService interface {
 	deployJob(appData application.Application)
 }
 
-func NewServiceImpl(ctx context.Context, db *gorm.DB, keyStorageService keystorage.Service, accountService account.Service, applicationService application.Service, p2pService p2p.Service, deployService deploy.Service, walletService wallet.Service, queueService queue2.Service) ServiceImpl {
+func NewServiceImpl(ctx context.Context, db *gorm.DB, keyStorageService keystorage.Client, accountService account.Service, applicationService application.Service, p2pService p2p.Service, deployService deploy.Service, walletService wallet.Service, queueService queue2.Client) ServiceImpl {
 	return ServiceImpl{ctx, db, keyStorageService, accountService, applicationService, p2pService, deployService, walletService, queueService}
 }
 

@@ -22,13 +22,13 @@ type ServiceImpl struct {
 	ctx                context.Context
 	httpUtil           *utils.HttpUtil
 	db                 *gorm.DB
-	keyStorageService  keystorage.Service
+	keyStorageService  keystorage.Client
 	p2pService         p2p.Service
 	walletService      wallet.Service
 	applicationService application.Service
 }
 
-func NewServiceImpl(ctx context.Context, httpUtil *utils.HttpUtil, db *gorm.DB, keyStorageService *keystorage.Service, p2pService p2p.Service, walletService wallet.Service, applicationService application.Service) ServiceImpl {
+func NewServiceImpl(ctx context.Context, httpUtil *utils.HttpUtil, db *gorm.DB, keyStorageService *keystorage.Client, p2pService p2p.Service, walletService wallet.Service, applicationService application.Service) ServiceImpl {
 	return ServiceImpl{ctx, httpUtil, db, *keyStorageService, p2pService, walletService, applicationService}
 }
 

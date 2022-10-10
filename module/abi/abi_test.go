@@ -72,12 +72,3 @@ func TestAll(t *testing.T) {
 		}
 	}
 }
-
-func TestGetPrivateKeyWithMnemonicAndPassword(t *testing.T) {
-	mnemonic := ""
-	privateKeyString, err := GetPrivateKeyHexStringWithMnemonic(mnemonic)
-	if err != nil {
-		t.Error(err)
-	}
-	fmt.Println(privateKeyString)
-}

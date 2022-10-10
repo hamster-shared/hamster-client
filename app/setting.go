@@ -19,13 +19,13 @@ type Config struct {
 type Setting struct {
 	ctx               context.Context
 	db                *gorm.DB
-	keyStorageService keystorage.Service
+	keyStorageService keystorage.Client
 	deployService     deploy.Service
 	p2pService        p2p.Service
 	accountService    account.Service
 }
 
-func NewSettingApp(service p2p.Service, accountService account.Service, db *gorm.DB, keyStorageService keystorage.Service, deployService deploy.Service) Setting {
+func NewSettingApp(service p2p.Service, accountService account.Service, db *gorm.DB, keyStorageService keystorage.Client, deployService deploy.Service) Setting {
 	return Setting{
 		p2pService:        service,
 		accountService:    accountService,
@@ -75,7 +75,7 @@ func (s *Setting) Setting(publicKey string, wsUrl string) (bool, error) {
 	return true, nil
 }
 
-//InitP2pSetting initialize p2p settings
+// InitP2pSetting initialize p2p settings
 func (s *Setting) InitP2pSetting() (bool, error) {
 	//initial configuration
 	err := s.p2pService.InitSetting()

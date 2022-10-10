@@ -42,7 +42,7 @@ type PullImageJob struct {
 }
 
 func (j *PullImageJob) InitStatus() {
-	j.statusInfo.Name = "Service Pull"
+	j.statusInfo.Name = "Client Pull"
 	j.statusInfo.Status = queue.None
 }
 
@@ -353,7 +353,7 @@ type GraphStakingJob struct {
 	id                int
 	chainId           int64
 	network           string
-	keyStorageService keystorage.Service
+	keyStorageService keystorage.Client
 }
 
 func (g *GraphStakingJob) InitStatus() {
@@ -361,7 +361,7 @@ func (g *GraphStakingJob) InitStatus() {
 	g.statusInfo.Status = queue.None
 }
 
-func NewGraphStakingJob(service keystorage.Service, applicationId int, network string, chainId int64) GraphStakingJob {
+func NewGraphStakingJob(service keystorage.Client, applicationId int, network string, chainId int64) GraphStakingJob {
 	return GraphStakingJob{
 		id:                applicationId,
 		chainId:           chainId,
@@ -523,7 +523,7 @@ type ServiceDeployJob struct {
 	statusInfo         queue.StatusInfo
 	id                 int
 	deployService      deploy.Service
-	keyStorageService  keystorage.Service
+	keyStorageService  keystorage.Client
 	p2pService         p2p.Service
 	accountService     account.Service
 	applicationService application.Service
@@ -531,11 +531,11 @@ type ServiceDeployJob struct {
 }
 
 func (s *ServiceDeployJob) InitStatus() {
-	s.statusInfo.Name = "Service Deploy"
+	s.statusInfo.Name = "Client Deploy"
 	s.statusInfo.Status = queue.None
 }
 
-func NewServiceDeployJob(service keystorage.Service, deployService deploy.Service, applicationId int, p2pService p2p.Service, accountService account.Service, applicationService application.Service, walletService wallet.Service) ServiceDeployJob {
+func NewServiceDeployJob(service keystorage.Client, deployService deploy.Service, applicationId int, p2pService p2p.Service, accountService account.Service, applicationService application.Service, walletService wallet.Service) ServiceDeployJob {
 	return ServiceDeployJob{
 		id:                 applicationId,
 		keyStorageService:  service,

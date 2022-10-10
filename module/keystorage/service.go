@@ -1,95 +1,94 @@
 package keystorage
 
 import (
-	"context"
 	"errors"
 	"gorm.io/gorm"
 )
 
-type ServiceImpl struct {
+type client struct {
 	tableName string
 	db        *gorm.DB
 	Error     error
 }
 
-func NewServiceImpl(ctx context.Context, db *gorm.DB) Service {
-	return &ServiceImpl{
+func NewClient(db *gorm.DB) Client {
+	return &client{
 		db:    db,
 		Error: nil,
 	}
 }
 
-func (self *ServiceImpl) Get(key string) string {
-	self.autoMigrate()
+func (c *client) Get(key string) string {
+	c.autoMigrate()
 	var result KeyStorage
-	err := self.db.Table(self.tableName).Where("key = ?", key).First(&result).Error
+	err := c.db.Table(c.tableName).Where("key = ?", key).First(&result).Error
 	if err != nil {
-		self.Error = err
+		c.Error = err
 		return ""
 	}
 	return result.Value
 }
 
-func (self *ServiceImpl) Set(key, value string) {
-	self.autoMigrate()
+func (c *client) Set(key, value string) {
+	c.autoMigrate()
 	k := KeyStorage{
 		Key:   key,
 		Value: value,
 	}
-	self.Get(key)
-	if self.Error != nil {
-		if errors.Is(self.Error, gorm.ErrRecordNotFound) {
-			self.Error = nil
-			err := self.db.Table(self.tableName).Create(&k).Error
+	c.Get(key)
+	if c.Error != nil {
+		if errors.Is(c.Error, gorm.ErrRecordNotFound) {
+			c.Error = nil
+			err := c.db.Table(c.tableName).Create(&k).Error
 			if err != nil {
-				self.Error = err
+				c.Error = err
 				return
 			}
 			return
 		}
 		return
 	}
-	err := self.db.Table(self.tableName).Where("key = ?", key).Updates(&k).Error
+	err := c.db.Table(c.tableName).Where("key = ?", key).Updates(&k).Error
 	if err != nil {
-		self.Error = err
+		c.Error = err
 		return
 	}
 }
 
-func (self *ServiceImpl) Delete(key string) {
-	self.autoMigrate()
-	err := self.db.Table(self.tableName).Where("key = ?", key).Delete(&KeyStorage{}).Error
+func (c *client) Delete(key string) {
+	c.autoMigrate()
+	err := c.db.Table(c.tableName).Where("key = ?", key).Delete(&KeyStorage{}).Error
 	if err != nil {
-		self.Error = err
+		c.Error = err
 		return
 	}
 }
 
-func (self *ServiceImpl) Err() error {
-	return self.Error
+func (c *client) Err() error {
+	return c.Error
 }
 
-func (self *ServiceImpl) SetTableName(name string) {
-	if self == nil {
+func (c *client) SetTableName(name string) {
+	if c == nil {
 		return
 	}
-	self.tableName = name
+	c.tableName = name
 }
 
-func (self *ServiceImpl) autoMigrate() {
-	if self == nil {
+func (c *client) autoMigrate() {
+	if c == nil {
 		return
 	}
 	defaultTableName := "key_storage"
-	if self.tableName == "" {
-		self.tableName = defaultTableName
+	if c.tableName == "" {
+		c.tableName = defaultTableName
 	}
-	if self.db.Migrator().HasTable(self.tableName) {
+	if c.db.Migrator().HasTable(c.tableName) {
 		return
 	}
-	err := self.db.Table(self.tableName).AutoMigrate(&KeyStorage{})
+	err := c.db.Table(c.tableName).AutoMigrate(&KeyStorage{})
 	if err != nil {
-		self.Error = err
+		c.Error = err
 		return
 	}
 }

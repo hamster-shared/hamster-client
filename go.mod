@@ -27,6 +27,7 @@ require (
 	github.com/stretchr/testify v1.7.2
 	github.com/vedhavyas/go-subkey v1.0.3
 	github.com/wailsapp/wails/v2 v2.0.0-beta.38
+	go.uber.org/zap v1.19.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	gorm.io/driver/sqlite v1.2.3
 	gorm.io/gorm v1.22.2
@@ -164,7 +165,6 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	go.uber.org/zap v1.19.0 // indirect
 	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
