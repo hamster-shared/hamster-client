@@ -54,7 +54,7 @@
     try {
       const result = await QueryApplicationById(applicationId);
       Object.assign(appInfo, result);
-      console.log('appInfo', appInfo.blockchain);
+      console.log('appInfo', appInfo.serviceType);
 
       const mappings =
         {
@@ -69,7 +69,7 @@
           near: NearTabs,
           aptos: AptosTabs,
           sui: SuiTabs,
-        }[appInfo.blockchain] || ApplicationTabs;
+        }[appInfo.serviceType] || ApplicationTabs;
 
       ShowBlockchain.value = mappings;
     } catch (error: any) {
