@@ -111,6 +111,7 @@ type ApplyVo struct {
 	PeerId         string    `json:"peerId"`
 	OrderIndex     int       `json:"orderIndex"`
 	ThinkingTime   int       `json:"thinkingTime"`
+	ServiceType    string    `json:"serviceType"`
 }
 
 type ListVo struct {

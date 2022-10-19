@@ -7,6 +7,7 @@ type DeployParam struct {
 	LeaseTerm       int    `json:"leaseTerm"`
 	ThegraphIndexer string `json:"thegraphIndexer"` // mnemonic
 	StakingAmount   int    `json:"stakingAmount"`
+	Blockchain      string `json:"blockchain"`
 }
 
 type DeployResult struct {
