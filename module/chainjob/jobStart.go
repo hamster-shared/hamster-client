@@ -2,10 +2,13 @@ package chainjob
 
 import (
 	"fmt"
+	"hamster-client/module/application"
 	"hamster-client/module/chainhelper"
 	"hamster-client/module/queue"
 	"hamster-client/utils"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // StartJob container start job
@@ -56,6 +59,14 @@ func (j *StartJob) Run(si chan queue.StatusInfo) (queue.StatusInfo, error) {
 			continue
 		}
 		if response.IsSuccess() {
+			err := j.helper.DB().
+				Model(application.Application{}).
+				Where("id = ?", j.appID).
+				Update("status", application.Running).
+				Error
+			if err != nil {
+				log.Errorf("update db application status error: %s", err.Error())
+			}
 			j.si.Status = queue.Succeeded
 			j.si.Error = ""
 			si <- j.si

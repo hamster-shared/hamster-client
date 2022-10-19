@@ -166,7 +166,7 @@ func Bond(api *gsrpc.SubstrateAPI, meta *types.Metadata, amount int64, pair sign
 		log.Errorf("NewCall error: %s", err.Error())
 		return err
 	}
-	log.Infof("call 成功")
+	log.Infof("call succeed")
 	return CallAndWatch(api, c, meta, func(header *types.Header) error {
 		fmt.Println(header.Digest)
 		return err
