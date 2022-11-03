@@ -24,6 +24,7 @@ type EventResourceOrderCreateOrderSuccess struct {
 	OrderIndex    types.U64
 	ResourceIndex types.U64
 	Duration      types.U32
+	DeployType types.U32
 	PublicKey     string
 	Topics        []types.Hash
 }

@@ -224,6 +224,12 @@ func (c *P2pClient) Forward(protoOpt string, port int, peerId string) error {
 	}
 
 	if err := c.CheckForwardHealth(protoOpt, peerId); err != nil {
+		// recover
+		defer func(){
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r)
+			}
+		}()
 		fmt.Println("CheckForwardHealth:", peerId)
 		fmt.Println("c.Peers:", c.Peers)
 		bootstrapPeers := randomSubsetOfPeers(convertPeers(c.Peers), 1)

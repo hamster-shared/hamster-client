@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
-	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
 	"hamster-client/config"
 	ethAbi "hamster-client/module/abi"
 	"hamster-client/module/account"
@@ -22,6 +20,10 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	gsrpc "github.com/centrifuge/go-substrate-rpc-client/v4"
+	"github.com/centrifuge/go-substrate-rpc-client/v4/types"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -229,9 +231,11 @@ func (j *WaitResourceJob) Run(sc chan queue.StatusInfo) (queue.StatusInfo, error
 				}
 				fmt.Println("provider version: ", version.Version)
 
-				c, err := types.NewCall(j.meta, "ResourceOrder.create_order_info", resourceIndex, types.NewU32(uint32(data.LeaseTerm)), "")
+				logrus.Infof("调用 ResourceOrder.create_order_info, 参数：%v, %v", resourceIndex, data.LeaseTerm)
+				c, err := types.NewCall(j.meta, "ResourceOrder.create_order_info", resourceIndex, types.NewU32(uint32(data.LeaseTerm)), " ", types.NewU32(0))
 				if err != nil {
 					fmt.Println(err.Error())
+					logrus.Error("调用 ResourceOrder.create_order_info 失败： ",err.Error())
 					_, _ = j.p2pService.Close(fmt.Sprintf("/p2p/%s", string(val.PeerId)))
 					failSet[int(val.Index)] = "fail"
 					continue
@@ -240,11 +244,16 @@ func (j *WaitResourceJob) Run(sc chan queue.StatusInfo) (queue.StatusInfo, error
 				err = pallet.CallAndWatch(j.api, c, j.meta, func(header *types.Header) error {
 					fmt.Printf("资源占用成功，资源号： %d, 交易序号： %d", resourceIndex, header.Number)
 					// get order index
+					logrus.Debug("调用 pallet.GetEvent")
 					e, err := pallet.GetEvent(j.api, j.meta, uint64(header.Number))
 					events = *e
+					if err != nil {
+						logrus.Error("获取事件失败： ", err.Error())
+					}
 					return err
 				}, pair)
 				if err != nil {
+					logrus.Errorf("pallet.CallAndWatch 失败： %v", err.Error())
 					_, _ = j.p2pService.Close(fmt.Sprintf("/p2p/%s", string(val.PeerId)))
 					failSet[int(val.Index)] = "fail"
 					continue
